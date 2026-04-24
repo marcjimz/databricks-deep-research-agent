@@ -418,7 +418,7 @@ query_modes:
     timeout_seconds: 30       # Quick response timeout
 
   web_search:
-    enabled: true             # Set to false to hide Web Search mode (e.g. no Brave API key)
+    enabled: false            # Set to true to show Web Search mode in UI
     model_role: analytical
     timeout_seconds: 20       # Per-attempt timeout
     max_retries: 5            # Retry up to 5 times on timeout before falling back
