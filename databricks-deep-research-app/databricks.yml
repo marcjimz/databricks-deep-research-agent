@@ -93,12 +93,14 @@ resources:
       # On-behalf-of-user authorization:
       # These scopes allow the app to access enterprise data sources
       # on behalf of the authenticated user (discovery + query).
-      user_api_scopes:
-        - sql
-        - dashboards.genie
-        - serving.serving-endpoints
-        - vectorsearch.vector-search-endpoints
-        - vectorsearch.vector-search-indexes
+      # NOTE: Requires "user token passthrough" feature to be enabled on the workspace.
+      # Uncomment when deploying to workspaces that support this feature.
+      # user_api_scopes:
+      #   - sql
+      #   - dashboards.genie
+      #   - serving.serving-endpoints
+      #   - vectorsearch.vector-search-endpoints
+      #   - vectorsearch.vector-search-indexes
 
       # ---- Config ----
       # NOTE: endpoint_name and pghost default to "pending" (not "")
