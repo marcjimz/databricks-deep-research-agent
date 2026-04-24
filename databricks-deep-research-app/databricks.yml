@@ -93,12 +93,14 @@ resources:
       # On-behalf-of-user authorization:
       # These scopes allow the app to access enterprise data sources
       # on behalf of the authenticated user (discovery + query).
-      user_api_scopes:
-        - sql
-        - dashboards.genie
-        - serving.serving-endpoints
-        - vectorsearch.vector-search-endpoints
-        - vectorsearch.vector-search-indexes
+      # NOTE: Requires "user token passthrough" feature to be enabled on the workspace.
+      # Uncomment when deploying to workspaces that support this feature.
+      # user_api_scopes:
+      #   - sql
+      #   - dashboards.genie
+      #   - serving.serving-endpoints
+      #   - vectorsearch.vector-search-endpoints
+      #   - vectorsearch.vector-search-indexes
 
       # ---- Config ----
       # NOTE: endpoint_name and pghost default to "pending" (not "")
@@ -268,6 +270,20 @@ targets:
       profile: ais
     variables:
       resource_suffix: "local"
+    resources:
+      postgres_projects:
+        deep_research_project:
+          project_id: deep-research-${var.resource_suffix}
+          display_name: deep-research-${var.resource_suffix}
+          pg_version: ${var.pg_version}
+
+  mc:
+    mode: development
+    default: false
+    workspace:
+      profile: mc-supervisor
+    variables:
+      resource_suffix: "mj"
     resources:
       postgres_projects:
         deep_research_project:

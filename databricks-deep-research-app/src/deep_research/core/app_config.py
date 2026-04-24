@@ -920,6 +920,10 @@ class QueryModeConfig(BaseModel):
     - deep_research: Full research pipeline with plan, steps, verification
     """
 
+    enabled: bool = Field(
+        default=True,
+        description="Whether this query mode is available to users",
+    )
     model_role: str = Field(
         default="analytical",
         description="Model tier to use for this mode (simple, analytical, complex)",
@@ -1031,6 +1035,14 @@ class QueryModesConfig(BaseModel):
             raise ValueError(
                 f"Invalid query mode: '{mode}'. Must be 'simple', 'web_search', or 'deep_research'"
             )
+
+    def enabled_modes(self) -> list[str]:
+        """Return list of enabled query mode names."""
+        modes: list[str] = []
+        for name in ("simple", "web_search", "deep_research"):
+            if getattr(self, name).enabled:
+                modes.append(name)
+        return modes
 
 
 # =============================================================================

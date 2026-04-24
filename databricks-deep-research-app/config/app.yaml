@@ -410,6 +410,7 @@ prompt_caching:
 #   - deep_research: Full research pipeline with plan, steps, verification
 query_modes:
   simple:
+    enabled: true             # Set to false to hide Simple mode in UI
     # Uses existing is_simple_query path in orchestrator
     model_role: simple
     emit_events: false        # No streaming events for simple mode
@@ -417,6 +418,7 @@ query_modes:
     timeout_seconds: 30       # Quick response timeout
 
   web_search:
+    enabled: true             # Set to false to hide Web Search mode (e.g. no Brave API key)
     model_role: analytical
     timeout_seconds: 20       # Per-attempt timeout
     max_retries: 5            # Retry up to 5 times on timeout before falling back
@@ -440,6 +442,7 @@ query_modes:
       enable_verification_retrieval: false  # Skip Stage 7 for speed
 
   deep_research:
+    enabled: false            # Disabled by default for MVP deployments
     # Uses existing research_types config (light/medium/extended)
     model_role: complex
     emit_events: true

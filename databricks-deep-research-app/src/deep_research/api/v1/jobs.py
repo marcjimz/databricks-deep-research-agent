@@ -22,13 +22,14 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from deep_research.api.v1.utils import verify_chat_access
+from deep_research.core.app_config import get_app_config
 from deep_research.core.logging_utils import get_logger
 from deep_research.db.session import get_db
 from deep_research.middleware.auth import CurrentUser
 from deep_research.models.research_session import ResearchSession, ResearchStatus
 from deep_research.schemas.common import BaseSchema
 from deep_research.schemas.source_scope import SourceScope
-from deep_research.api.v1.utils import verify_chat_access
 from deep_research.services.job_manager import get_job_manager
 from deep_research.services.research_event_service import ResearchEventService
 
@@ -176,6 +177,14 @@ async def submit_job(
         HTTPException 429: If user has reached max concurrent jobs limit.
     """
     job_manager = get_job_manager()
+
+    # Reject disabled query modes
+    app_config = get_app_config()
+    if body.query_mode not in app_config.query_modes.enabled_modes():
+        raise HTTPException(
+            status_code=400,
+            detail=f"Query mode '{body.query_mode}' is disabled in this deployment.",
+        )
 
     # Get services from app state
     llm = request.app.state.llm_client

@@ -6,6 +6,8 @@ interface QueryModeSelectorProps {
   onChange: (mode: QueryMode) => void;
   disabled?: boolean;
   className?: string;
+  /** When provided, only modes in this list are shown. */
+  enabledModes?: string[];
 }
 
 const MODE_OPTIONS: { value: QueryMode; label: string; icon: string; description: string }[] = [
@@ -34,12 +36,19 @@ export function QueryModeSelector({
   onChange,
   disabled = false,
   className,
+  enabledModes,
 }: QueryModeSelectorProps) {
+  const visibleOptions = enabledModes
+    ? MODE_OPTIONS.filter((o) => enabledModes.includes(o.value))
+    : MODE_OPTIONS;
+
+  if (visibleOptions.length <= 1) return null;
+
   return (
     <div className={cn('flex items-center gap-1', className)}>
       <span className="text-xs text-muted-foreground mr-1">Mode:</span>
       <div className="flex gap-1 rounded-md border border-input p-0.5 bg-muted/50">
-        {MODE_OPTIONS.map((option) => (
+        {visibleOptions.map((option) => (
           <button
             key={option.value}
             type="button"

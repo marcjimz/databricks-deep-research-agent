@@ -74,3 +74,10 @@ class ServingEndpointsResponse(BaseSchema):
 
     config_endpoint_names: list[str] = Field(default_factory=list)
     """Endpoint identifiers that are also configured in YAML (for dedup)."""
+
+
+class QueryModesResponse(BaseSchema):
+    """Response listing enabled query modes."""
+
+    modes: list[str] = Field(default_factory=list)
+    """List of enabled query mode names (e.g. ['simple', 'deep_research'])."""

@@ -46,6 +46,24 @@ export async function getModelCatalog(): Promise<EndpointCatalogResponse> {
   return response.json();
 }
 
+/** Response from the query modes API. */
+export interface QueryModesResponse {
+  modes: string[];
+}
+
+/** Fetch the list of enabled query modes. */
+export async function getEnabledQueryModes(): Promise<QueryModesResponse> {
+  const response = await fetch(`${API_BASE_URL}/config/query-modes`, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch query modes: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
 /** Summary of a workspace serving endpoint. */
 export interface ServingEndpointSummary {
   name: string;

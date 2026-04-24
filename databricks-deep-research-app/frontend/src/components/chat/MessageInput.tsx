@@ -98,7 +98,7 @@ export function MessageInput({
 
   // Use hook for persistence (localStorage + optional API sync)
   // Only sync with preferences when mode selector is visible
-  const { mode: storedMode, setMode: setStoredMode } = useQueryMode({
+  const { mode: storedMode, setMode: setStoredMode, enabledModes } = useQueryMode({
     initialMode: 'web_search',
     syncWithPreferences: effectiveShowModeSelector, // Only sync when visible
   });
@@ -459,6 +459,7 @@ export function MessageInput({
             value={queryMode}
             onChange={setQueryMode}
             disabled={disabled || isLoading}
+            enabledModes={enabledModes}
           />
         )}
         {shouldShowDepthSelector && (

@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { preferencesApi } from '../api/client';
+import { getEnabledQueryModes } from '../api/config';
 import type { QueryMode } from '../types';
 
 const STORAGE_KEY = 'deep-research-query-mode';
@@ -26,6 +27,8 @@ interface UseQueryModeReturn {
   isWebSearch: boolean;
   /** Whether syncing with preferences */
   isSyncing: boolean;
+  /** List of enabled query mode names from server config (undefined while loading) */
+  enabledModes: string[] | undefined;
 }
 
 /**
@@ -50,6 +53,20 @@ export function useQueryMode(
 ): UseQueryModeReturn {
   const { initialMode = 'simple', syncWithPreferences = false } = options;
   const [isSyncing, setIsSyncing] = useState(false);
+  const [enabledModes, setEnabledModes] = useState<string[] | undefined>(undefined);
+
+  // Fetch enabled modes from server config on mount
+  useEffect(() => {
+    const fetchModes = async () => {
+      try {
+        const resp = await getEnabledQueryModes();
+        setEnabledModes(resp.modes);
+      } catch {
+        // On error, leave undefined (show all modes)
+      }
+    };
+    fetchModes();
+  }, []);
 
   // Initialize from localStorage or default
   const [mode, setModeState] = useState<QueryMode>(() => {
@@ -107,6 +124,19 @@ export function useQueryMode(
     }
   }, [setMode]);
 
+  // Auto-switch to first enabled mode if current mode is disabled
+  useEffect(() => {
+    if (enabledModes && enabledModes.length > 0 && !enabledModes.includes(mode)) {
+      const fallback = enabledModes[0] as QueryMode;
+      setModeState(fallback);
+      try {
+        localStorage.setItem(STORAGE_KEY, fallback);
+      } catch {
+        // Ignore storage errors
+      }
+    }
+  }, [enabledModes, mode]);
+
   // Sync with localStorage changes from other tabs
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
@@ -126,6 +156,7 @@ export function useQueryMode(
     isSimple: mode === 'simple',
     isWebSearch: mode === 'web_search',
     isSyncing,
+    enabledModes,
   };
 }
 

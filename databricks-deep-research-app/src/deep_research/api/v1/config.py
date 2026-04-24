@@ -16,6 +16,7 @@ from deep_research.schemas.config import (
     EndpointCatalogResponse,
     EndpointInfo,
     ModelCategoryInfo,
+    QueryModesResponse,
     ServingEndpointsResponse,
     ServingEndpointSummary,
 )
@@ -58,6 +59,17 @@ async def get_model_catalog(_user: CurrentUser) -> EndpointCatalogResponse:
         categories=categories,
         endpoints=endpoints,
     )
+
+
+@router.get("/query-modes", response_model=QueryModesResponse)
+async def get_query_modes(_user: CurrentUser) -> QueryModesResponse:
+    """Get the list of enabled query modes.
+
+    Returns only modes where enabled=true in app config.
+    Used by the frontend to show/hide query mode buttons.
+    """
+    app_config = get_app_config()
+    return QueryModesResponse(modes=app_config.query_modes.enabled_modes())
 
 
 # Simple module-level cache for workspace endpoints

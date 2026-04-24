@@ -54,7 +54,8 @@ from deep_research.models.uploaded_file import (
     FileType,
     UploadedFile,
 )
-from deep_research.models.user import User
+# NOTE: User model file is missing from repo (broken commit bd73c2f)
+# from deep_research.models.user import User
 from deep_research.models.user_preferences import UserPreferences
 
 __all__ = [
@@ -86,7 +87,7 @@ __all__ = [
     "FileType",
     "FileProcessingStatus",
     # User
-    "User",
+    # "User",  # Missing from repo
     # User Preferences
     "UserPreferences",
     # Feedback

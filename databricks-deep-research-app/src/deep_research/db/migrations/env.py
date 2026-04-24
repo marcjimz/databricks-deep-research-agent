@@ -25,7 +25,7 @@ from deep_research.models import (  # noqa: E402, F401
     message_feedback,
     research_session,
     source,
-    user,
+    # user,  # NOTE: user.py missing from repo (broken commit bd73c2f)
     user_preferences,
 )
 
