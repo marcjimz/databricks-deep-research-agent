@@ -9,6 +9,7 @@ export { useChatFull, usePrefetchChatFull, CHAT_FULL_KEY } from './useChatFull';
 export { useDraftChats } from './useDraftChats';
 export type { DraftChat } from './useDraftChats';
 export { useQueryMode } from './useQueryMode';
+export { useModelSelector } from './useModelSelector';
 export { useSourceScope } from './useSourceScope';
 export { useResearchPanel } from './useResearchPanel';
 export type { ResearchPanelTab } from './useResearchPanel';

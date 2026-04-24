@@ -90,6 +90,10 @@ class SubmitJobRequest(BaseModel):
         default=False,
         description="If true, pause after plan creation for user review.",
     )
+    model_override: str | None = Field(
+        default=None,
+        description="Model endpoint name to use for all tiers in this research job.",
+    )
 
 
 class JobResponse(BaseSchema):
@@ -273,6 +277,7 @@ async def submit_job(
         file_ids=body.file_ids,
         agent_id=body.agent_id,
         enable_plan_review=body.enable_plan_review,
+        model_override=body.model_override,
     )
 
     logger.info(

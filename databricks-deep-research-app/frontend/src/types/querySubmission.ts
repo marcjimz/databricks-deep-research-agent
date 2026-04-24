@@ -22,4 +22,5 @@ export interface QuerySubmission {
   fileIds?: string[];
   agentId?: string;
   enablePlanReview?: boolean;
+  modelOverride?: string;
 }

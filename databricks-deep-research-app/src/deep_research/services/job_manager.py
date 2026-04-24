@@ -168,6 +168,7 @@ class JobManager:
         file_ids: list[str] | None = None,
         agent_id: str | None = None,
         enable_plan_review: bool = False,
+        model_override: str | None = None,
     ) -> ResearchSession:
         """Submit a new research job.
 
@@ -199,6 +200,7 @@ class JobManager:
             file_ids: Uploaded file IDs to include in research context.
             agent_id: Custom agent ID to use for this research job.
             enable_plan_review: If True, pause after plan creation for user review.
+            model_override: Model endpoint name to override all tiers.
 
         Returns:
             The created ResearchSession.
@@ -313,6 +315,7 @@ class JobManager:
                 file_ids=file_ids,
                 agent_id=agent_id,
                 enable_plan_review=enable_plan_review,
+                model_override=model_override,
             )
         )
         self._active_tasks[session_id] = task
@@ -448,6 +451,7 @@ class JobManager:
         file_ids: list[str] | None = None,
         agent_id: str | None = None,
         enable_plan_review: bool = False,
+        model_override: str | None = None,
     ) -> None:
         """Execute research job in background.
 
@@ -478,6 +482,7 @@ class JobManager:
             file_ids: Uploaded file IDs to include in research context.
             agent_id: Custom agent ID to use for this research job.
             enable_plan_review: If True, pause after plan creation for user review.
+            model_override: Model endpoint name to override all tiers.
         """
         from deep_research.agent.orchestrator import OrchestrationConfig, stream_research
         from deep_research.db.session import get_session_maker
@@ -653,6 +658,21 @@ class JobManager:
                             "error": str(e)[:200],
                         },
                     )
+
+            # Per-chat model override: highest precedence, overrides agent + YAML defaults
+            if model_override:
+                app_config = get_app_config()
+                endpoint_id = model_override
+                if model_override in app_config.endpoints:
+                    endpoint_id = app_config.endpoints[model_override].endpoint_identifier
+                config.model_overrides = dict.fromkeys(app_config.models, endpoint_id)
+                logger.info(
+                    "JOB_MODEL_OVERRIDE_APPLIED",
+                    session_id=str(session_id),
+                    model_override=model_override,
+                    endpoint_id=endpoint_id,
+                    tiers=list(app_config.models.keys()),
+                )
 
             # Use fresh session maker to trigger token refresh check
             session_maker = get_session_maker()

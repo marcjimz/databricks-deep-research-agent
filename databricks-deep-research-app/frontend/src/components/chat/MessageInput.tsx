@@ -3,11 +3,12 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResearchDepthSelector, type ResearchDepth } from './ResearchDepthSelector';
 import { QueryModeSelector } from './QueryModeSelector';
+import { ModelSelector } from './ModelSelector';
 import { SourceScopeSelector } from '@/components/research/SourceScopeSelector';
 import { SourceBrowserModal } from './SourceBrowserModal';
 import { FileUploadZone } from '@/components/files/FileUploadZone';
 import { UploadedFileList } from '@/components/files/UploadedFileList';
-import { useQueryMode, useSourceScope } from '@/hooks';
+import { useQueryMode, useModelSelector, useSourceScope } from '@/hooks';
 import { useDiscoveredSources, useRefreshDiscovery } from '@/hooks/useDiscoveredSources';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { useCustomAgents } from '@/hooks/useCustomAgents';
@@ -102,6 +103,9 @@ export function MessageInput({
     initialMode: 'web_search',
     syncWithPreferences: effectiveShowModeSelector, // Only sync when visible
   });
+
+  // Model selector hook (localStorage persistence)
+  const { selectedModel, setSelectedModel } = useModelSelector();
 
   // Effective query mode: plugin default when selector hidden, else user's choice
   const queryMode = effectiveShowModeSelector
@@ -380,6 +384,7 @@ export function MessageInput({
         fileIds: readyFiles.length > 0 ? readyFiles.map(f => f.id) : undefined,
         agentId: selectedAgent?.id ?? undefined,
         enablePlanReview: enablePlanReview || undefined,
+        modelOverride: selectedModel ?? undefined,
       };
 
       onSubmit(submission);
@@ -462,6 +467,11 @@ export function MessageInput({
             enabledModes={enabledModes}
           />
         )}
+        <ModelSelector
+          selectedModel={selectedModel}
+          onModelChange={setSelectedModel}
+          disabled={disabled || isLoading}
+        />
         {shouldShowDepthSelector && (
           <ResearchDepthSelector
             value={researchDepth}

@@ -340,6 +340,7 @@ export const jobsApi = {
     fileIds?: string[]
     agentId?: string
     enablePlanReview?: boolean
+    modelOverride?: string
   }) =>
     request<Job>('/research/jobs', {
       method: 'POST',
@@ -356,6 +357,7 @@ export const jobsApi = {
         file_ids: data.fileIds || null,
         agent_id: data.agentId || null,
         enable_plan_review: data.enablePlanReview ?? false,
+        model_override: data.modelOverride || null,
       }),
     }),
 
