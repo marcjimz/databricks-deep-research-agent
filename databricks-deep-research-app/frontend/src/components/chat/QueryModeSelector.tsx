@@ -38,9 +38,10 @@ export function QueryModeSelector({
   className,
   enabledModes,
 }: QueryModeSelectorProps) {
-  const visibleOptions = enabledModes
-    ? MODE_OPTIONS.filter((o) => enabledModes.includes(o.value))
-    : MODE_OPTIONS;
+  // Don't render until enabledModes has loaded from server to prevent flash
+  if (!enabledModes) return null;
+
+  const visibleOptions = MODE_OPTIONS.filter((o) => enabledModes.includes(o.value));
 
   if (visibleOptions.length <= 1) return null;
 

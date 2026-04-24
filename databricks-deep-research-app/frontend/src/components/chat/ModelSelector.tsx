@@ -17,9 +17,17 @@ const FRIENDLY_NAMES: Record<string, string> = {
   'databricks-claude-3-7-sonnet': 'Claude Sonnet 3.7',
   'databricks-claude-sonnet-4': 'Claude Sonnet 4',
   'databricks-claude-opus-4': 'Claude Opus 4',
+  'databricks-claude-haiku-4-5': 'Claude Haiku 4.5',
+  'databricks-claude-sonnet-4-5': 'Claude Sonnet 4.5',
+  'databricks-claude-opus-4-5': 'Claude Opus 4.5',
   'databricks-gpt-4o-mini': 'GPT-4o Mini',
   'databricks-gpt-4o': 'GPT-4o',
+  'databricks-gpt-5-nano': 'GPT-5 Nano',
+  'databricks-gpt-5-mini': 'GPT-5 Mini',
+  'databricks-gpt-5-2': 'GPT-5',
   'databricks-gemini-2-0-flash': 'Gemini 2.0 Flash',
+  'databricks-gemini-3-flash': 'Gemini 3 Flash',
+  'databricks-gemini-3-pro': 'Gemini 3 Pro',
   'databricks-meta-llama-3-3-70b-instruct': 'Llama 3.3 70B',
   'databricks-meta-llama-3-1-405b-instruct': 'Llama 3.1 405B',
 };
@@ -35,7 +43,6 @@ function detectProvider(endpointIdentifier: string): Provider {
 }
 
 function getFriendlyName(endpoint: EndpointInfo): string {
-  // Check both the config key name and the endpoint identifier
   return (
     FRIENDLY_NAMES[endpoint.name] ??
     FRIENDLY_NAMES[endpoint.endpointIdentifier] ??
@@ -151,7 +158,8 @@ export function ModelSelector({ selectedModel, onModelChange, disabled }: ModelS
   const selectedLabel = selectedEndpoint ? getFriendlyName(selectedEndpoint) : 'Auto';
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative flex items-center gap-1" ref={dropdownRef}>
+      <span className="text-xs text-muted-foreground">Model:</span>
       <button
         type="button"
         data-testid="model-selector-trigger"
@@ -170,7 +178,8 @@ export function ModelSelector({ selectedModel, onModelChange, disabled }: ModelS
         ) : (
           <ModelIcon className="h-3.5 w-3.5" />
         )}
-        <span className="max-w-[120px] truncate">{selectedLabel}</span>
+        <span className="max-w-[140px] truncate">{selectedLabel}</span>
+        <ChevronIcon className="h-3 w-3 opacity-50" />
         {selectedModel && (
           <button
             type="button"
@@ -190,7 +199,7 @@ export function ModelSelector({ selectedModel, onModelChange, disabled }: ModelS
       {isOpen && (
         <div
           data-testid="model-selector-dropdown"
-          className="absolute left-0 top-full z-50 mt-1 w-64 max-h-72 overflow-auto rounded-md border bg-popover p-1 shadow-md"
+          className="absolute left-0 bottom-full z-50 mb-1 w-64 max-h-80 overflow-auto rounded-md border bg-popover p-1 shadow-md"
         >
           {/* Auto option */}
           <button
@@ -273,6 +282,23 @@ function ModelIcon({ className }: { className?: string }) {
       <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
       <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
       <line x1="12" y1="22.08" x2="12" y2="12" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m6 9 6 6 6-6" />
     </svg>
   );
 }
